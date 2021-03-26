@@ -1,6 +1,6 @@
 require('dotenv').config({ path: 'config.env' });
+const puppeteer = require('puppeteer');
 const fs = require('fs');
-const generatePdf = require('./utils');
 const Discord = require('discord.js');
 
 const client = new Discord.Client();
@@ -12,164 +12,56 @@ client.on('ready', () => {
 const prefix = '-';
 
 client.on('message', async function (message) {
-  if (message.author.bot) return;
-  if (!message.content.startsWith(prefix)) return;
-  const commandBody = message.content.slice(prefix.length);
-  const args = commandBody.split(' ');
-  console.log(args);
-  const command = args.shift().toLowerCase();
-  if (command === 'ping') {
-    await generatePdf.generatePdf('https://www.w3schools.com/');
-    await message.channel.send('Testing message.', {
-      files: ['./example.pdf', './example.pdf'],
-    });
-    const timeTaken = Date.now() - message.createdTimestamp;
-    message.reply(`Pong! This message had a latency of ${timeTaken}ms.`);
-  }
-});
-
-client.on('message', function (message) {
-  if (message.author.bot) return;
-  if (!message.content.startsWith(prefix)) return;
-  const commandBody = message.content.slice(prefix.length);
-  const args = commandBody.split(' ');
-  const command = args.shift().toLowerCase();
-  if (command === 'cvrt') {
-    message.channel.send('Testing message.', {
-      files: ['./example.pdf', './example.pdf'],
-    });
-    const timeTaken = Date.now() - message.createdTimestamp;
-    message.reply(`Pong! This message had a latency of ${timeTaken}ms.`);
+  try {
+    if (message.author.bot) return;
+    if (!message.content.startsWith(prefix)) return;
+    const commandBody = message.content.slice(prefix.length);
+    const args = commandBody.split(' ');
+    const command = args.shift().toLowerCase();
+    if (command === 'cvrt') {
+      const url = message.content.split(' ')[1];
+      if (url.startsWith('https://') || url.startsWith('http://')) {
+        let file = { url };
+        let options = {
+          format: 'A4',
+          args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        };
+        let args = ['--no-sandbox', '--disable-setuid-sandbox'];
+        await message.reply('Converting webpage to PDF, please wait...');
+        const browser = await puppeteer.launch({
+          args: args,
+        });
+        const page = await browser.newPage();
+        await page.goto(file.url, {
+          waitUntil: 'networkidle0',
+        });
+        const data = await page.pdf(options);
+        await browser.close();
+        await message.reply('Generating PDF, please wait...');
+        console.log(Buffer.from(Object.values(data)));
+        const fileName = Date.now();
+        fs.writeFileSync(
+          `./pdfs/${fileName}` + '.pdf',
+          Buffer.from(Object.values(data))
+        );
+        await message.channel.send('Here is your pdf.', {
+          files: [`./pdfs/${fileName}.pdf`],
+        });
+        fs.unlink(`./pdfs/${fileName}.pdf`, function (err) {
+          if (err) {
+            throw err;
+          } else {
+            console.log('Successfully deleted the file.');
+          }
+        });
+      } else {
+        await message.reply('URL must start with http:// or https://');
+      }
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
 });
 
 client.login(process.env.BOT_TOKEN);
-
-// const puppeteer = require('puppeteer');
-// const Promise = require('bluebird');
-// const hb = require('handlebars');
-
-// let options = {
-//   format: 'A4',
-//   args: ['--no-sandbox', '--disable-setuid-sandbox'],
-// };
-
-// let file = { url: 'https://google.com' };
-
-// (async function generatePdf(file, options, callback) {
-//   console.log(file);
-//   // we are using headless mode
-//   let args = ['--no-sandbox', '--disable-setuid-sandbox'];
-//   if (options.args) {
-//     args = options.args;
-//     delete options.args;
-//   }
-
-//   const browser = await puppeteer.launch({
-//     args: args,
-//   });
-//   const page = await browser.newPage();
-
-//   if (file.content) {
-//     console.log('Compiling the template with handlebars');
-//     // we have compile our code with handlebars
-//     const template = hb.compile(file.content, { strict: true });
-//     const result = template(file.content);
-//     const html = result;
-
-//     // We set the page content as the generated html by handlebars
-//     await page.setContent(html);
-//   } else {
-//     await page.goto(file.url, {
-//       waitUntil: 'networkidle0', // wait for page to load completely
-//     });
-//   }
-
-//   return Promise.props(page.pdf(options))
-//     .then(async function (data) {
-//       await browser.close();
-//       console.log(Buffer.from(Object.values(data)));
-//       fs.writeFileSync('example.pdf', Buffer.from(Object.values(data)));
-//       return Buffer.from(Object.values(data));
-//     })
-//     .asCallback(callback);
-// })(file, options, () => {
-//   console.log('Done');
-// });
-
-// (async function generatePdf(file, options, callback) {
-//   // we are using headless mode
-//   let args = ['--no-sandbox', '--disable-setuid-sandbox'];
-//   if (options.args) {
-//     args = options.args;
-//     delete options.args;
-//   }
-
-//   const browser = await puppeteer.launch({
-//     args: args,
-//   });
-//   const page = await browser.newPage();
-
-//   if (file.content) {
-//     console.log('Compiling the template with handlebars');
-//     // we have compile our code with handlebars
-//     const template = hb.compile(file.content, { strict: true });
-//     const result = template(file.content);
-//     const html = result;
-
-//     // We set the page content as the generated html by handlebars
-//     await page.setContent(html);
-//   } else {
-//     await page.goto(file.url, {
-//       waitUntil: 'networkidle0', // wait for page to load completely
-//     });
-//   }
-
-//   return Promise.props(page.pdf(options))
-//     .then(async function (data) {
-//       await browser.close();
-
-//       return Buffer.from(Object.values(data));
-//     })
-//     .asCallback(callback);
-// })();
-
-// async function generatePdfs(files, options, callback) {
-//   // we are using headless mode
-//   let args = ['--no-sandbox', '--disable-setuid-sandbox'];
-//   if (options.args) {
-//     args = options.args;
-//     delete options.args;
-//   }
-//   const browser = await puppeteer.launch({
-//     args: args,
-//   });
-//   let pdfs = [];
-//   const page = await browser.newPage();
-//   for (let file of files) {
-//     if (file.content) {
-//       console.log('Compiling the template with handlebars');
-//       // we have compile our code with handlebars
-//       const template = hb.compile(file.content, { strict: true });
-//       const result = template(file.content);
-//       const html = result;
-//       // We set the page content as the generated html by handlebars
-//       await page.setContent(html);
-//     } else {
-//       await page.goto(file.url, {
-//         waitUntil: 'networkidle0', // wait for page to load completely
-//       });
-//     }
-//     let pdfObj = JSON.parse(JSON.stringify(file));
-//     delete pdfObj['content'];
-//     pdfObj['buffer'] = Buffer.from(Object.values(await page.pdf(options)));
-//     pdfs.push(pdfObj);
-//   }
-
-//   return Promise.resolve(pdfs)
-//     .then(async function (data) {
-//       await browser.close();
-//       return data;
-//     })
-//     .asCallback(callback);
-// }
