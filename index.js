@@ -25,6 +25,12 @@ client.on('message', async function (message) {
         let options = {
           format: 'A4',
           args: ['--no-sandbox', '--disable-setuid-sandbox'],
+          margin: {
+            top: '20px',
+            bottom: '40px',
+            left: '20px',
+            right: '20px',
+          },
         };
         let args = ['--no-sandbox', '--disable-setuid-sandbox'];
         await message.reply('Converting webpage to PDF, please wait...');
