@@ -70,7 +70,7 @@ client.on('message', async function (message) {
     }
   } catch (err) {
     console.log(err);
-    await message.reply('PDF generation failed. Please try again!');
+    // await message.reply('PDF generation failed. Please try again!');
   }
 });
 
