@@ -73,6 +73,7 @@ client.on('message', async function (message) {
   }
 });
 
+// App server to listen
 app.listen(process.env.PORT || 3000, () => console.log('Bot connected'));
 
 client.login(process.env.BOT_TOKEN);
