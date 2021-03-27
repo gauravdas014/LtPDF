@@ -1,7 +1,10 @@
 require('dotenv').config({ path: 'config.env' });
+const express = require('express');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const Discord = require('discord.js');
+
+const app = express();
 
 const client = new Discord.Client();
 
@@ -28,8 +31,8 @@ client.on('message', async function (message) {
           margin: {
             top: '40px',
             bottom: '40px',
-            left: '30px',
-            right: '30px',
+            left: '40px',
+            right: '40px',
           },
         };
         let args = ['--no-sandbox', '--disable-setuid-sandbox'];
@@ -69,5 +72,7 @@ client.on('message', async function (message) {
     throw err;
   }
 });
+
+app.listen(process.env.PORT || 3000, () => console.log('Bot connected'));
 
 client.login(process.env.BOT_TOKEN);
