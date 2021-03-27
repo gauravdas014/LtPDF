@@ -40,6 +40,7 @@ client.on('message', async function (message) {
         await message.reply('Converting webpage to PDF, please wait...');
         const browser = await puppeteer.launch({
           args: args,
+          ignoreDefaultArgs: ['--disable-extensions'],
         });
         const page = await browser.newPage();
         await page.goto(file.url, {
