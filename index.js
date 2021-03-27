@@ -24,6 +24,7 @@ client.on('message', async function (message) {
     if (command === 'cvrt') {
       const url = message.content.split(' ')[1];
       if (url.startsWith('https://') || url.startsWith('http://')) {
+        console.log(url);
         let file = { url };
         let options = {
           format: 'A4',
@@ -69,7 +70,7 @@ client.on('message', async function (message) {
     }
   } catch (err) {
     console.log(err);
-    throw err;
+    await message.reply('PDF generation failed. Please try again!');
   }
 });
 
