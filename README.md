@@ -5,5 +5,7 @@
 ## How to use it?
 
 ```cnsole
--cvrt `url`
+-cvrt url
 ```
+
+### Example: `-cvrt https://google.in`
