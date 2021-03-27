@@ -19,7 +19,7 @@ jobs:
     - name: Set up Node.js version
       uses: actions/setup-node@v1
       with:
-        node-version: '12.x'
+        node-version: '14.x'
 
     - name: npm install, build, and test
       run: |
@@ -52,5 +52,5 @@ jobs:
       with:
         app-name: 'ltpdf'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_39211d21e3354bf089cfabd48da1b005 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_777d629bac1648ca88eab52a9933ab94 }}
         package: .
