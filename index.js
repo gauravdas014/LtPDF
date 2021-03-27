@@ -26,10 +26,10 @@ client.on('message', async function (message) {
           format: 'A4',
           args: ['--no-sandbox', '--disable-setuid-sandbox'],
           margin: {
-            top: '20px',
+            top: '40px',
             bottom: '40px',
-            left: '20px',
-            right: '20px',
+            left: '30px',
+            right: '30px',
           },
         };
         let args = ['--no-sandbox', '--disable-setuid-sandbox'];
