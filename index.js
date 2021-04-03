@@ -71,11 +71,11 @@ client.on('message', async function (message) {
     }
   } catch (err) {
     console.log(err);
-    // await message.reply('PDF generation failed. Please try again!');
+    await message.reply('PDF generation failed. Please try again!');
   }
 });
 
 // App server to listen
-app.listen(process.env.PORT || 3000, () => console.log('Bot connected'));
+app.listen(process.env.PORT || 5000, () => console.log('Bot connected'));
 
 client.login(process.env.BOT_TOKEN);
