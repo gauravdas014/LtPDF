@@ -6,6 +6,10 @@ const Discord = require('discord.js');
 
 const app = express();
 
+app.get('/', (req, res) => {
+  res.send('Bot is live');
+});
+
 const client = new Discord.Client();
 
 client.on('ready', () => {
@@ -76,6 +80,6 @@ client.on('message', async function (message) {
 });
 
 // App server to listen
-app.listen(process.env.PORT || 5000, () => console.log('Bot connected'));
+app.listen(process.env.PORT || 8080, () => console.log('Bot connected'));
 
 client.login(process.env.BOT_TOKEN);
