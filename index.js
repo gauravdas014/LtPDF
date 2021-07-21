@@ -42,8 +42,10 @@ client.on("message", async function (message) {
         };
         let args = ["--no-sandbox", "--disable-setuid-sandbox"];
         await message.reply("Converting webpage to PDF, please wait...");
-        const browser = await puppeteer.launch({
-          args: args,
+        const browser = await puppeteer.connect({
+          browserWSEndpoint: "wss://chrome.browserless.io/",
+          // browserURL: url,
+          // args: args,
           // ignoreDefaultArgs: ['--disable-extensions'],
         });
         const page = await browser.newPage();
